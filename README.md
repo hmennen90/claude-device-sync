@@ -1,4 +1,4 @@
-# claude-sync
+# claude-device-sync
 
 Cross-device session storage, shared memory, and reminders for [Claude Code](https://claude.com/claude-code).
 
@@ -17,7 +17,7 @@ Sync your Claude Code sessions, memory, and reminders across multiple devices �
 ## Install
 
 ```bash
-npm install -g claude-sync
+npm install -g claude-device-sync
 ```
 
 **Requirements:** Node.js 20+, Git, a private Git repository (GitHub, GitLab, etc.)
@@ -26,10 +26,10 @@ npm install -g claude-sync
 
 ```bash
 # 1. Initialize with your private repo
-claude-sync init git@github.com:you/your-sync-repo.git
+device-sync init git@github.com:you/your-sync-repo.git
 
 # 2. Install auto-sync hooks into Claude Code
-claude-sync hooks install
+device-sync hooks install
 
 # 3. Done! Sessions and memory sync automatically.
 ```
@@ -40,103 +40,103 @@ claude-sync hooks install
 
 ```bash
 # Push current session + memory
-claude-sync push
+device-sync push
 
 # Pull latest from remote
-claude-sync pull
+device-sync pull
 
 # Resume the latest session (from any device)
-claude-sync resume
+device-sync resume
 
 # List all synced sessions
-claude-sync sessions
+device-sync sessions
 
 # Resume a specific user's session (team mode)
-claude-sync resume --user colleague
+device-sync resume --user colleague
 ```
 
 ### Reminders
 
 ```bash
 # Set a reminder
-claude-sync remind 30m "Check deploy status"
-claude-sync remind 2h "Review PR"
-claude-sync remind "morgen 9:00" "Standup prep"
-claude-sync remind 1d "Release notes" --webhook https://hooks.slack.com/...
+device-sync remind 30m "Check deploy status"
+device-sync remind 2h "Review PR"
+device-sync remind "morgen 9:00" "Standup prep"
+device-sync remind 1d "Release notes" --webhook https://hooks.slack.com/...
 
 # View reminders
-claude-sync reminders
-claude-sync reminders --due
-claude-sync reminders --dismiss
+device-sync reminders
+device-sync reminders --due
+device-sync reminders --dismiss
 ```
 
 ### Team Mode
 
 ```bash
 # Initialize in team mode
-claude-sync init git@github.com:team/shared-sync.git --mode team --username alice
+device-sync init git@github.com:team/shared-sync.git --mode team --username alice
 
 # On another device / team member
-claude-sync init git@github.com:team/shared-sync.git --mode team --username bob
+device-sync init git@github.com:team/shared-sync.git --mode team --username bob
 
 # Add a team member
-claude-sync team add charlie
+device-sync team add charlie
 
 # All sessions and memory are visible to all team members
-claude-sync sessions --user bob
-claude-sync resume --user alice
+device-sync sessions --user bob
+device-sync resume --user alice
 ```
 
 ### Hooks (Auto-Sync)
 
 ```bash
 # Install hooks into Claude Code settings
-claude-sync hooks install
+device-sync hooks install
 
 # Check hook status
-claude-sync hooks status
+device-sync hooks status
 
 # Remove hooks
-claude-sync hooks uninstall
+device-sync hooks uninstall
 ```
 
 Installed hooks:
 | Event | Trigger | Action |
 |-------|---------|--------|
-| SessionStart | Always | `claude-sync pull` |
-| SessionEnd | Always | `claude-sync push` |
-| PostToolUse | Write/Edit | `claude-sync push --memory-only` |
-| PreToolUse | Always | `claude-sync pull --memory-only` |
+| SessionStart | Always | `device-sync pull` |
+| SessionEnd | Always | `device-sync push` |
+| PostToolUse | Write/Edit | `device-sync push --memory-only` |
+| PreToolUse | Always | `device-sync pull --memory-only` |
 
 ### Reminder Daemon
 
 ```bash
 # Install background checker (fires webhooks for due reminders)
-claude-sync daemon start
+device-sync daemon start
 
 # Check status
-claude-sync daemon status
+device-sync daemon status
 
 # View logs
-claude-sync daemon log
+device-sync daemon log
 
 # Stop daemon
-claude-sync daemon stop
+device-sync daemon stop
 ```
 
 ### Maintenance
 
 ```bash
 # View sync status
-claude-sync status
+device-sync status
 
 # Purge old sessions (default: >30 days)
-claude-sync purge
-claude-sync purge --days 14
-claude-sync purge --dry-run
+device-sync purge
+device-sync purge --days 14
+device-sync purge --dry-run
 
 # Purge old reminders
-claude-sync reminders --dismiss
+device-sync reminders --dismiss
 ```
 
 ## Security
@@ -159,7 +159,7 @@ Encrypted .enc files → committed to private Git repo
 
 Repo structure:
 ```
-claude-sync-repo/
+device-sync-repo/
 ├── config.json              # Sync config (mode, devices, team members)
 ├── sessions/
 │   ├── latest.enc           # Pointer to most recent session

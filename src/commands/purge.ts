@@ -13,7 +13,7 @@ function formatBytes(bytes: number): string {
 export async function purge(options: { days?: string; dryRun?: boolean }) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 

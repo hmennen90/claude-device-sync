@@ -20,7 +20,7 @@ export async function init(repoUrl: string, options: { mode: string; username?: 
   const rl = createInterface({ input: stdin, output: stdout });
   const mode = options.mode as SyncMode;
 
-  console.log('\n🔧 claude-sync init\n');
+  console.log('\n🔧 device-sync init\n');
 
   // Get username
   let username = options.username;
@@ -137,7 +137,7 @@ export async function init(repoUrl: string, options: { mode: string; username?: 
 
     await saveRepoConfig(localPath, repoConfig);
     await storeKey(repoUrl, key);
-    await sync.push('Initialize claude-sync');
+    await sync.push('Initialize device-sync');
 
     console.log('✓ Sync initialized successfully!');
   }
@@ -154,5 +154,5 @@ export async function init(repoUrl: string, options: { mode: string; username?: 
 
   console.log(`\n✓ Key stored in system keychain`);
   console.log(`✓ Local config saved to ${getConfigDir()}/config.json`);
-  console.log('\nReady! Use "claude-sync push" and "claude-sync pull" to sync.\n');
+  console.log('\nReady! Use "device-sync push" and "device-sync pull" to sync.\n');
 }

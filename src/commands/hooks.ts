@@ -29,13 +29,13 @@ export async function hooksStatus() {
     console.log(`Hooks installed: ${status.installed ? 'yes' : 'no'}`);
 
     if (status.hooks.length > 0) {
-      console.log('\nActive claude-sync hooks:');
+      console.log('\nActive device-sync hooks:');
       for (const hook of status.hooks) {
         const matcherLabel = hook.matcher || '(all)';
         console.log(`  ${hook.event} [${matcherLabel}] -> ${hook.command}`);
       }
     } else {
-      console.log('\nNo claude-sync hooks found. Run "claude-sync hooks install" to set up.');
+      console.log('\nNo device-sync hooks found. Run "device-sync hooks install" to set up.');
     }
   } catch (err) {
     console.error('Failed to read hook status:', (err as Error).message);

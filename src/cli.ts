@@ -16,7 +16,7 @@ import { purge } from './commands/purge.js';
 const program = new Command();
 
 program
-  .name('claude-sync')
+  .name('device-sync')
   .description('Cross-device session storage, shared memory, and reminders for Claude Code')
   .version('0.1.0');
 

@@ -5,7 +5,7 @@ import { GitSync } from '../git/sync.js';
 export async function teamAdd(username: string, options: { role?: string }) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 
@@ -55,5 +55,5 @@ export async function teamAdd(username: string, options: { role?: string }) {
   await sync.push(`Add team member: ${username}`);
 
   console.log(`\n✓ Added ${username} as ${role}`);
-  console.log(`  They can join by running: claude-sync init ${localConfig.repoUrl} --mode team -u ${username}\n`);
+  console.log(`  They can join by running: device-sync init ${localConfig.repoUrl} --mode team -u ${username}\n`);
 }

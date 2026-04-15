@@ -10,7 +10,7 @@ export async function remind(
 ) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 
@@ -55,7 +55,7 @@ export async function remind(
 export async function reminders(options: { due?: boolean; dismiss?: boolean }) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 

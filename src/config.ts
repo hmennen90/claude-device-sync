@@ -44,7 +44,7 @@ export interface LocalConfig {
 
 const CONFIG_DIR = path.join(
   process.env.HOME ?? process.env.USERPROFILE ?? '~',
-  '.claude-sync'
+  '.device-sync'
 );
 
 export function getConfigDir(): string {

@@ -9,7 +9,7 @@ const CLAUDE_DIR = path.join(
 );
 const SETTINGS_PATH = path.join(CLAUDE_DIR, 'settings.json');
 
-const HOOK_MARKER = 'claude-sync';
+const HOOK_MARKER = 'device-sync';
 
 interface HookEntry {
   matcher: string;
@@ -32,32 +32,32 @@ function silentWrap(cmd: string): string {
 }
 
 /**
- * The hooks claude-sync installs into Claude Code's settings.json.
+ * The hooks device-sync installs into Claude Code's settings.json.
  */
 function getSyncHooks(): Record<string, HookEntry[]> {
   return {
     PreToolUse: [
       {
         matcher: '',
-        command: silentWrap('claude-sync pull --memory-only'),
+        command: silentWrap('device-sync pull --memory-only'),
       },
     ],
     PostToolUse: [
       {
         matcher: 'Write|Edit',
-        command: silentWrap('claude-sync push --memory-only'),
+        command: silentWrap('device-sync push --memory-only'),
       },
     ],
     SessionStart: [
       {
         matcher: '',
-        command: silentWrap('claude-sync pull'),
+        command: silentWrap('device-sync pull'),
       },
     ],
     SessionEnd: [
       {
         matcher: '',
-        command: silentWrap('claude-sync push'),
+        command: silentWrap('device-sync push'),
       },
     ],
   };
@@ -83,14 +83,14 @@ async function saveSettings(settings: ClaudeSettings): Promise<void> {
 }
 
 /**
- * Check whether a hook entry was installed by claude-sync.
+ * Check whether a hook entry was installed by device-sync.
  */
 function isOurHook(entry: HookEntry): boolean {
   return entry.command.includes(HOOK_MARKER);
 }
 
 /**
- * Install claude-sync hooks into Claude Code's settings.json.
+ * Install device-sync hooks into Claude Code's settings.json.
  * Merges with existing hooks without overwriting them.
  */
 export async function installHooks(): Promise<void> {
@@ -131,7 +131,7 @@ export async function installHooks(): Promise<void> {
 }
 
 /**
- * Remove all claude-sync hooks from Claude Code's settings.json.
+ * Remove all device-sync hooks from Claude Code's settings.json.
  */
 export async function uninstallHooks(): Promise<void> {
   const settings = await loadSettings();
@@ -164,7 +164,7 @@ export async function uninstallHooks(): Promise<void> {
   await saveSettings(settings);
 
   if (removedCount === 0) {
-    console.log('No claude-sync hooks found to remove.');
+    console.log('No device-sync hooks found to remove.');
   } else {
     console.log(`Removed ${removedCount} hook(s) from ${SETTINGS_PATH}`);
   }

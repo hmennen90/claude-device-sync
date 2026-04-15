@@ -4,14 +4,14 @@ import { retrieveKey } from '../crypto/keychain.js';
 export async function status() {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.log('\n❌ Not initialized. Run "claude-sync init <repo-url>" first.\n');
+    console.log('\n❌ Not initialized. Run "device-sync init <repo-url>" first.\n');
     return;
   }
 
   const key = await retrieveKey(localConfig.repoUrl);
   const repoConfig = await loadRepoConfig(localConfig.localPath);
 
-  console.log('\nclaude-sync status\n');
+  console.log('\ndevice-sync status\n');
   console.log(`  Repo:     ${localConfig.repoUrl}`);
   console.log(`  Local:    ${localConfig.localPath}`);
   console.log(`  Device:   ${localConfig.deviceId}`);

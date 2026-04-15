@@ -4,7 +4,7 @@
   "description": "Cross-device session storage, shared memory, and reminders for Claude Code",
   "type": "module",
   "bin": {
-    "claude-device-sync": "dist/cli.js"
+    "device-sync": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -36,11 +36,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hmennen90/claude-sync.git"
+    "url": "git+https://github.com/hmennen90/claude-device-sync.git"
   },
-  "homepage": "https://github.com/hmennen90/claude-sync#readme",
+  "homepage": "https://github.com/hmennen90/claude-device-sync#readme",
   "bugs": {
-    "url": "https://github.com/hmennen90/claude-sync/issues"
+    "url": "https://github.com/hmennen90/claude-device-sync/issues"
   },
   "license": "MIT",
   "author": "Hendrik Mennen",

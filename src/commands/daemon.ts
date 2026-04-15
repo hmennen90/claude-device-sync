@@ -5,9 +5,9 @@ import path from 'node:path';
 import os from 'node:os';
 import { runCheck, LOG_PATH } from '../daemon/checker.js';
 
-const PLIST_LABEL = 'com.claude-sync.daemon';
+const PLIST_LABEL = 'com.device-sync.daemon';
 const PLIST_PATH = path.join(os.homedir(), 'Library', 'LaunchAgents', `${PLIST_LABEL}.plist`);
-const CRONTAB_MARKER = '# claude-sync-daemon';
+const CRONTAB_MARKER = '# device-sync-daemon';
 const TASK_NAME = 'ClaudeSyncDaemon';
 
 type Platform = 'macos' | 'linux' | 'windows';
@@ -19,9 +19,9 @@ function getPlatform(): Platform {
 }
 
 function getExecutablePath(): string {
-  // Resolve the claude-sync binary. Prefer the globally-linked bin,
+  // Resolve the device-sync binary. Prefer the globally-linked bin,
   // fall back to npx/node invocation of the compiled entry point.
-  const whichCmd = process.platform === 'win32' ? 'where claude-sync' : 'which claude-sync';
+  const whichCmd = process.platform === 'win32' ? 'where device-sync' : 'which device-sync';
   try {
     return execSync(whichCmd, { encoding: 'utf-8' }).trim().split('\n')[0];
   } catch {
@@ -286,7 +286,7 @@ export async function daemonStatus(): Promise<void> {
 
 export async function daemonLog(): Promise<void> {
   if (!existsSync(LOG_PATH)) {
-    console.log('No log file yet. Run "claude-sync daemon check" first.');
+    console.log('No log file yet. Run "device-sync daemon check" first.');
     return;
   }
 

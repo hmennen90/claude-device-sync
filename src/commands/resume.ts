@@ -6,7 +6,7 @@ import { SessionManager } from '../session/manager.js';
 export async function resume(options: { user?: string; project?: string }) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 

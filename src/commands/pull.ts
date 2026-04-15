@@ -9,13 +9,13 @@ import { ReminderManager } from '../reminders/manager.js';
 export async function pull(options: { memoryOnly?: boolean }) {
   const localConfig = await loadLocalConfig();
   if (!localConfig) {
-    console.error('Not initialized. Run "claude-sync init" first.');
+    console.error('Not initialized. Run "device-sync init" first.');
     process.exit(1);
   }
 
   const key = await retrieveKey(localConfig.repoUrl);
   if (!key) {
-    console.error('Encryption key not found in keychain. Run "claude-sync init" again.');
+    console.error('Encryption key not found in keychain. Run "device-sync init" again.');
     process.exit(1);
   }
 
@@ -62,7 +62,7 @@ export async function pull(options: { memoryOnly?: boolean }) {
       console.log(`  • ${r.message}${by}`);
       console.log(`    Due: ${new Date(r.dueAt).toLocaleString()}`);
     }
-    console.log('\n  Use "claude-sync reminders --dismiss" to dismiss.');
+    console.log('\n  Use "device-sync reminders --dismiss" to dismiss.');
   }
 
   console.log('\n✓ Pull complete!');
