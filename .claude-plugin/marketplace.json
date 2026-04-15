@@ -1,0 +1,21 @@
+{
+  "name": "claude-device-sync",
+  "owner": {
+    "name": "Hendrik Mennen",
+    "email": "hendrik@mennen.dev"
+  },
+  "metadata": {
+    "description": "Cross-device session storage, shared memory, and reminders for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "claude-device-sync",
+      "source": ".",
+      "description": "Sync Claude Code sessions, memory, and reminders across devices via encrypted Git repository",
+      "version": "0.2.0",
+      "author": {
+        "name": "Hendrik Mennen"
+      }
+    }
+  ]
+}
