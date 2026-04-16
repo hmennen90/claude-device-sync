@@ -12,7 +12,7 @@
       "name": "claude-device-sync",
       "source": "./",
       "description": "Sync Claude Code sessions, memory, and reminders across devices via encrypted Git repository",
-      "version": "0.2.0",
+      "version": "1.0.0",
       "author": {
         "name": "Hendrik Mennen"
       }
