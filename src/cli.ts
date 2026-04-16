@@ -15,6 +15,7 @@ import { teamAdd } from './commands/team.js';
 import { hooksInstall, hooksUninstall, hooksStatus } from './commands/hooks.js';
 import { daemonStart, daemonStop, daemonCheck, daemonStatus, daemonLog } from './commands/daemon.js';
 import { purge } from './commands/purge.js';
+import { star } from './commands/star.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -145,5 +146,10 @@ program
   .option('--days <number>', 'Delete sessions older than N days (default: 30)')
   .option('--dry-run', 'Show what would be deleted without deleting')
   .action(purge);
+
+program
+  .command('star')
+  .description('⭐ Star the project on GitHub')
+  .action(star);
 
 program.parse();

@@ -6,6 +6,7 @@ import { retrieveKey } from '../crypto/keychain.js';
 import { GitSync } from '../git/sync.js';
 import { SessionManager } from '../session/manager.js';
 import { MemorySync } from '../memory/sync.js';
+import { starHint } from './star.js';
 
 export async function push(options: { session?: string; memoryOnly?: boolean; sessionOnly?: boolean }) {
   const localConfig = await loadLocalConfig();
@@ -92,6 +93,7 @@ export async function push(options: { session?: string; memoryOnly?: boolean; se
 
     await sync.push(`Sync from ${localConfig.deviceName}`);
     console.log('\n✓ Push complete!');
+    await starHint();
   } else {
     console.log('\nNothing to push.');
   }
