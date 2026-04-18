@@ -1,18 +1,20 @@
 # claude-device-sync
 
-Cross-device session storage, shared memory, and reminders for [Claude Code](https://claude.com/claude-code).
+> The first **Claude Code Plugin** with encrypted cross-device session sync, shared memory, native reminders, and team mode. Installs as a plugin, includes 5 skills, works standalone as a CLI.
 
-Sync your Claude Code sessions, memory, and reminders across multiple devices — encrypted, via a private Git repo. Works solo or with a team.
+[![npm](https://img.shields.io/npm/v/claude-device-sync)](https://www.npmjs.com/package/claude-device-sync)
+[![license](https://img.shields.io/npm/l/claude-device-sync)](LICENSE)
 
-## Features
+![demo](docs/demo.svg)
 
-- **Session Sync** — Save and resume full Claude Code sessions from any device
-- **Shared Memory** — Sync Claude Code memory files across machines
-- **Reminders** — Set time-based reminders with DE/EN time parsing and optional webhook notifications
-- **Team Mode** — Share sessions, memory, and reminders with team members
-- **End-to-End Encryption** — Argon2id key derivation + ChaCha20-Poly1305, password-based
-- **Auto-Sync Hooks** — Automatically push/pull on session start/end
-- **Reminder Daemon** — Background cron job for webhook notifications (macOS launchd + Linux crontab)
+## What You Get
+
+- **Native Claude Code Plugin** — 5 skills (`/remind`, `/resume`, `/setup`, `/status`, `/sync`) + auto-sync session hook
+- **Git-backed session sync** — use any private repo (GitHub / GitLab / Gitea / self-hosted)
+- **Shared memory** — sync `~/.claude/` memory files across devices
+- **Reminders with DE/EN time parser** — `"morgen 9:00"`, `30m`, `2h`, `1d`, optional webhooks
+- **Team mode** — per-user namespace, resume teammates' sessions
+- **End-to-end encrypted** — Argon2id key derivation + ChaCha20-Poly1305
 
 ## Install
 
@@ -34,7 +36,31 @@ device-sync hooks install
 # 3. Done! Sessions and memory sync automatically.
 ```
 
-## Usage
+## Skills
+
+When installed as a Claude Code plugin, the following skills become available as slash commands:
+
+### `/setup` — Initialize device-sync
+
+Guides you through connecting a private Git repo, choosing personal or team mode, setting a passphrase, and installing hooks.
+
+### `/sync` — Push & pull sessions
+
+Push or pull sessions, memory, and reminders. Supports `--memory-only` and `--session-only` flags.
+
+### `/resume` — Continue from another device
+
+Pulls the latest sync state, finds the most recent session, decrypts it and loads the context so you can pick up where you left off.
+
+### `/remind` — Cross-device reminders
+
+Set reminders with natural language time parsing (DE/EN). Supports relative (`30m`, `2h`) and absolute (`"morgen 9:00"`, `"tomorrow 14:30"`) times. Optional `--webhook` for Slack/Teams notifications.
+
+### `/status` — Configuration & hooks
+
+Shows sync config, registered devices, hook status, and team members. Manage hooks and team settings from here.
+
+## CLI Reference
 
 ### Session Sync
 
@@ -139,21 +165,25 @@ device-sync purge --dry-run
 device-sync reminders --dismiss
 ```
 
-## Security
+## Encryption
 
-- **Encryption:** All data is encrypted with ChaCha20-Poly1305 before being committed to Git
-- **Key Derivation:** Argon2id (memory-hard, 64 MB, 3 iterations) from your password
-- **No plaintext ever touches the repo** — session data, memory files, and reminders are all `.enc` blobs
-- **Password never stored** — only the derived key, cached in your OS keychain (macOS Keychain, Linux libsecret, Windows Credential Vault)
-- **Verification:** A key fingerprint (truncated SHA-256) is stored in the repo to verify password correctness on new devices without exposing the key
+All data is encrypted before being committed to Git. No plaintext ever touches the repo.
 
-## How It Works
+| Parameter | Value |
+|-----------|-------|
+| **Cipher** | ChaCha20-Poly1305 |
+| **KDF** | Argon2id (64 MB memory, 3 iterations) |
+| **Key storage** | OS keychain (macOS Keychain, Linux libsecret, Windows Credential Vault) |
+| **Fingerprint** | Truncated SHA-256 stored in repo for password verification on new devices |
+
+**What's encrypted:** session data, memory files, reminders — all stored as `.enc` blobs.
+**What's not encrypted:** `config.json` (sync mode, device list, team member names), Git metadata.
 
 ```
 Your Password
-    ↓ Argon2id + salt (stored in repo)
+    → Argon2id + salt (stored in repo)
 256-bit Key (stored in OS keychain)
-    ↓ ChaCha20-Poly1305
+    → ChaCha20-Poly1305
 Encrypted .enc files → committed to private Git repo
 ```
 
@@ -183,11 +213,15 @@ device-sync-repo/
 
 ### `GitConstructError: Cannot use simple-git on a directory that does not exist`
 
-Fixed in 0.2.1. If you're on an older version, the `init` command would crash when `~/.device-sync/repo` did not yet exist because `GitSync` instantiated `simple-git` against the not-yet-cloned directory. Upgrade with `npm install -g claude-device-sync@latest`, or as a workaround pre-create the directory (`mkdir ~/.device-sync/repo`) before running `init`.
+Fixed in 0.2.1. Upgrade with `npm install -g claude-device-sync@latest`.
 
 ### `No memory directory found` on Windows
 
-Fixed in 0.2.2. The project-directory lookup only replaced `\` and `/`, not the drive-letter colon, so `D:\PhpstormProjects\foo` resolved to `D:-PhpstormProjects-foo` instead of Claude Code's actual `D--PhpstormProjects-foo`. Upgrade to 0.2.2 or newer.
+Fixed in 0.2.2. The project-directory lookup did not strip the drive-letter colon. Upgrade to 0.2.2+.
+
+## Marketplace
+
+This plugin will be submitted to the Claude Code Plugin Marketplace once the marketplace is publicly available. In the meantime, install it globally via npm and the plugin is automatically discovered by Claude Code.
 
 ## License
 
