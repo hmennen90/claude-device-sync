@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: 20
 
+      - run: npm install
+
       - name: Determine version bump from commits
         id: bump
         run: |
