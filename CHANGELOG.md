@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.1 — 2026-04-18
+
+- fix(hooks): wrap commands in hooks array per Claude Code schema
+- docs: add CHANGELOG.md, demo SVG, restructure README
+- chore: validate marketplace.json for submission
+
+**Full Changelog**: https://github.com/hmennen90/claude-device-sync/compare/v1.0.0...v1.0.1
+
 ## v1.0.0 — 2026-04-18
 
 - feat: add star command and one-time GitHub star hint after first push
