@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Skip release commits to avoid infinite loops
+    if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determine version bump from commits
+        id: bump
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            RANGE="HEAD"
+          else
+            RANGE="${LAST_TAG}..HEAD"
+          fi
+
+          COMMITS=$(git log "$RANGE" --pretty=format:"%s" 2>/dev/null || echo "")
+
+          if [ -z "$COMMITS" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BUMP="none"
+
+          # Check for breaking changes
+          if echo "$COMMITS" | grep -qiE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+            BUMP="major"
+          # Check for features
+          elif echo "$COMMITS" | grep -qiE '^feat(\(.+\))?:'; then
+            BUMP="minor"
+          # Check for fixes, perf, refactor
+          elif echo "$COMMITS" | grep -qiE '^(fix|perf|refactor)(\(.+\))?:'; then
+            BUMP="patch"
+          fi
+
+          if [ "$BUMP" = "none" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump version
+        if: steps.bump.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # npm version updates package.json, runs sync-version.js (via version hook), commits & tags
+          npm version ${{ steps.bump.outputs.bump }} -m "chore(release): v%s"
+
+      - name: Push release
+        if: steps.bump.outputs.skip != 'true'
+        run: git push --follow-tags
+
+      - name: Generate release notes
+        if: steps.bump.outputs.skip != 'true'
+        id: notes
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+
+          if [ -z "$LAST_TAG" ]; then
+            RANGE="HEAD"
+          else
+            RANGE="${LAST_TAG}..v${VERSION}"
+          fi
+
+          NOTES=$(git log "$RANGE" --pretty=format:"- %s" --no-merges | grep -vE '^- chore\(release\):')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Write multiline notes
+          {
+            echo "notes<<EOF"
+            echo "$NOTES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.bump.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ steps.notes.outputs.version }}" \
+            --title "v${{ steps.notes.outputs.version }}" \
+            --notes "${{ steps.notes.outputs.notes }}"
